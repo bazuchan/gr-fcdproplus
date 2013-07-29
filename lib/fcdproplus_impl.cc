@@ -140,6 +140,8 @@ namespace gr {
         aucBuf[1] = FCD_HID_CMD_QUERY;
         hid_write(d_control_handle,aucBuf,65);
         hid_read(d_control_handle,aucBuf,65);
+        hid_close(d_control_handle);
+        d_control_handle = NULL;
         std::cerr <<"Result of Action :+++++" << std::endl;
         for(int i=2;i<15;i++)
            std::cerr << aucBuf[i];
@@ -154,6 +156,7 @@ namespace gr {
     {
         if(d_control_handle !=0)   {
             hid_close(d_control_handle);
+            d_control_handle = NULL;
         }
         hid_exit();
 
@@ -178,9 +181,15 @@ namespace gr {
         aucBuf[3] = (unsigned char)(nfreq>>8);
         aucBuf[4] = (unsigned char)(nfreq>>16);
         aucBuf[5] = (unsigned char)(nfreq>>24);
+        d_control_handle = hid_open ( FCDPROPLUS_VENDOR_ID ,FCDPROPLUS_PRODUCT_ID,NULL );
+        if(d_control_handle == NULL ) {
+            throw std::runtime_error("Can't open hid device");
+        }
         hid_write(d_control_handle, aucBuf, 65);
         aucBuf[1]=0;
         hid_read(d_control_handle, aucBuf, 65);
+        hid_close(d_control_handle);
+        d_control_handle = NULL;
         if (aucBuf[0]==FCD_HID_CMD_SET_FREQUENCY_HZ && aucBuf[1]==1) {
             nfreq = 0;
             nfreq = (unsigned int) aucBuf[2];
@@ -211,8 +220,14 @@ namespace gr {
         else {
             aucBuf[2]=0;
         }
+        d_control_handle = hid_open ( FCDPROPLUS_VENDOR_ID ,FCDPROPLUS_PRODUCT_ID,NULL );
+        if(d_control_handle == NULL ) {
+            throw std::runtime_error("Can't open hid device");
+        }
         hid_write(d_control_handle, aucBuf, 65);
         hid_read(d_control_handle, aucBuf, 65);
+        hid_close(d_control_handle);
+        d_control_handle = NULL;
         if(aucBuf[0] == FCD_HID_CMD_SET_LNA_GAIN) {
             if (gain != 0) {
                 std::cerr <<" Lna gain enabled" << std::endl;
@@ -238,8 +253,14 @@ namespace gr {
         else {
             aucBuf[2]=0;
         }
+        d_control_handle = hid_open ( FCDPROPLUS_VENDOR_ID ,FCDPROPLUS_PRODUCT_ID,NULL );
+        if(d_control_handle == NULL ) {
+            throw std::runtime_error("Can't open hid device");
+        }
         hid_write(d_control_handle, aucBuf, 65);
         hid_read(d_control_handle, aucBuf, 65);
+        hid_close(d_control_handle);
+        d_control_handle = NULL;
         if(aucBuf[0] == FCD_HID_CMD_SET_MIXER_GAIN) {
             if (gain != 0) {
                 std::cerr <<" Mixer gain enabled" << std::endl;
@@ -278,8 +299,14 @@ namespace gr {
         aucBuf[0] = 0; // Report ID. Ignored by HID Class firmware as only config'd for one report
         aucBuf[1] = FCD_HID_CMD_SET_IF_GAIN;
         aucBuf[2] = (unsigned char) gain;
+        d_control_handle = hid_open ( FCDPROPLUS_VENDOR_ID ,FCDPROPLUS_PRODUCT_ID,NULL );
+        if(d_control_handle == NULL ) {
+            throw std::runtime_error("Can't open hid device");
+        }
         hid_write(d_control_handle, aucBuf, 65);
         hid_read(d_control_handle, aucBuf, 65);
+        hid_close(d_control_handle);
+        d_control_handle = NULL;
         if(aucBuf[0] == FCD_HID_CMD_SET_IF_GAIN) {
             std::cerr <<"If gain set to: "<< gain <<std::endl;
         }
