@@ -26,7 +26,7 @@ self.$(id).set_freq($freq)
   <param>
     <name>Device Name</name>
     <key>device_name</key>
-    <value></value>
+    <value>@DEVICE_STRING@</value>
     <type>string</type>
   </param>
   <param>
